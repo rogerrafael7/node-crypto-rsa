@@ -1,10 +1,10 @@
 {
   "name": "node-crypto-rsa",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "npx rimraf dist && tsc",
     "test": "jest",
     "postinstall": "npm run build"
   },
@@ -28,6 +28,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.2.0",
     "eslint-plugin-promise": "^4.2.1",
+    "rimraf": "^3.0.2",
     "ts-jest": "^26.4.4",
     "ts-loader": "^8.0.7",
     "ts-node": "^10.9.1",
