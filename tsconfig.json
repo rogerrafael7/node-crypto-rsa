@@ -1,0 +1,38 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "types": [
+      "node",
+      "jest",
+    ],
+    "baseUrl": "./",
+    "lib": ["es5", "es6", "ES2018"],
+    "outDir": "dist",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "target": "ES2018",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "inlineSourceMap": true,
+    "sourceMap": false,
+    "noImplicitAny": true,
+    "declaration": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "stripInternal": true,
+    "pretty": true,
+    "noUnusedLocals": true,
+    "downlevelIteration": true,
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "src/tests",
+    "node_modules"
+  ]
+}
