@@ -2,6 +2,8 @@ import fs from 'fs'
 import * as path from 'path'
 import crypto from 'crypto'
 
+type Base64 = string
+
 export class RSAUtil {
   publicKeyPEMString: string
   privateKeyPEMString: string
@@ -37,6 +39,9 @@ export class RSAUtil {
   }
 
   encrypt (dataToEncrypt: any, publicKeyString: Buffer|string = this.publicKeyPEMString) {
+    if (dataToEncrypt && typeof dataToEncrypt === 'object') {
+      dataToEncrypt = JSON.stringify(dataToEncrypt)
+    }
     const encryptedData = crypto.publicEncrypt(
       {
         key: publicKeyString,
@@ -55,14 +60,14 @@ export class RSAUtil {
     return this.encrypt(pathToFile, publicKey)
   }
 
-  decrypt (encryptedData: string, privateKeyString = this.privateKeyPEMString) {
+  decrypt (encryptedDataBase64: Base64, privateKeyString = this.privateKeyPEMString) {
     const decryptedData = crypto.privateDecrypt(
       {
         key: privateKeyString,
         padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
         oaepHash: 'sha256',
       },
-      Buffer.from(encryptedData, 'base64'),
+      Buffer.from(encryptedDataBase64, 'base64'),
     )
     return decryptedData.toString('utf-8')
   }
