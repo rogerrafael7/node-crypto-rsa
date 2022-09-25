@@ -38,6 +38,12 @@ export class RSAUtil {
     fs.writeFileSync(path.resolve(process.cwd(), pathToCreate, 'private.pem'), privateKeyPEMString, { encoding: 'utf-8' })
   }
 
+  /**
+   *
+   * @param {*} dataToEncrypt
+   * @param {String} publicKeyString
+   * @returns {String} encryptedDataBase64 - base64 string
+   */
   encrypt (dataToEncrypt: any, publicKeyString: Buffer|string = this.publicKeyPEMString) {
     if (dataToEncrypt && typeof dataToEncrypt === 'object') {
       dataToEncrypt = JSON.stringify(dataToEncrypt)
@@ -60,6 +66,11 @@ export class RSAUtil {
     return this.encrypt(pathToFile, publicKey)
   }
 
+  /**
+   * @param {Base64} encryptedDataBase64 - base64 string
+   * @param {String} privateKeyString
+   * @returns {String} decryptedData
+   */
   decrypt (encryptedDataBase64: Base64, privateKeyString = this.privateKeyPEMString) {
     const decryptedData = crypto.privateDecrypt(
       {
