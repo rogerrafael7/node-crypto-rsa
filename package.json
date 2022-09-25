@@ -1,11 +1,11 @@
 {
   "name": "node-crypto-rsa",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npx rimraf dist && tsc",
-    "test": "jest --passWithNoTests --runInBand",
+    "build": "npx rimraf dist && npx tsc",
+    "test": "npx jest --passWithNoTests --runInBand",
     "postinstall": "npm run build"
   },
   "keywords": [],
