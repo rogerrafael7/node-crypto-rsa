@@ -1,15 +1,19 @@
-import fs from 'fs'
-import * as path from 'path'
 import crypto from 'crypto'
 
 type Base64 = string
 
+export interface Config {
+  padding?: number|undefined
+  oaepHash?: string
+}
+
 export class RSAUtil {
   publicKeyPEMString: string
   privateKeyPEMString: string
-  constructor () {
+  constructor (readonly config: Partial<Config> = {}) {
     this.publicKeyPEMString = null
     this.privateKeyPEMString = null
+    this.config.padding = this.config.padding || crypto.constants.RSA_PKCS1_PADDING
   }
 
   createPairKeys () {
@@ -25,19 +29,6 @@ export class RSAUtil {
     }
   }
 
-  exportPairKeysToFiles (pathToCreate: string) {
-    let publicKeyPEMString = this.publicKeyPEMString
-    let privateKeyPEMString = this.privateKeyPEMString
-    if (!publicKeyPEMString || !privateKeyPEMString) {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const { publicKeyPEMString: _public, privateKeyPEMString: _private } = this.createPairKeys()
-      publicKeyPEMString = _public
-      privateKeyPEMString = _private
-    }
-    fs.writeFileSync(path.resolve(process.cwd(), pathToCreate, 'public.pem'), publicKeyPEMString, { encoding: 'utf-8' })
-    fs.writeFileSync(path.resolve(process.cwd(), pathToCreate, 'private.pem'), privateKeyPEMString, { encoding: 'utf-8' })
-  }
-
   /**
    *
    * @param {*} dataToEncrypt
@@ -51,19 +42,12 @@ export class RSAUtil {
     const encryptedData = crypto.publicEncrypt(
       {
         key: publicKeyString,
-        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-        oaepHash: 'sha256',
+        padding: this.config.padding,
+        ...(this.config.oaepHash ? { oaepHash: this.config.oaepHash } : {}),
       },
       Buffer.from(dataToEncrypt),
     )
     return encryptedData.toString('base64')
-  }
-
-  encryptFromPublicPEMFile (pathToFile: string, publicKeyPEMPath: string) {
-    const publicKey = Buffer.from(
-      fs.readFileSync(path.resolve(process.cwd(), publicKeyPEMPath), { encoding: 'utf-8' }),
-    )
-    return this.encrypt(pathToFile, publicKey)
   }
 
   /**
@@ -75,16 +59,11 @@ export class RSAUtil {
     const decryptedData = crypto.privateDecrypt(
       {
         key: privateKeyString,
-        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-        oaepHash: 'sha256',
+        padding: this.config.padding,
+        ...(this.config.oaepHash ? { oaepHash: this.config.oaepHash } : {}),
       },
       Buffer.from(encryptedDataBase64, 'base64'),
     )
     return decryptedData.toString('utf-8')
-  }
-
-  decryptFromPrivatePEMFile (encryptedData: string, privateKeyPEMPath: string) {
-    const privateKey = fs.readFileSync(path.resolve(process.cwd(), privateKeyPEMPath), { encoding: 'utf-8' })
-    return this.decrypt(encryptedData, privateKey)
   }
 }
